@@ -1,0 +1,18 @@
+name: camunda7experiment
+author: Moritz Schwarz <moritz.schwarz@envite.de>
+description: usage_scenario for camunda7experiment
+
+compose-file: !include docker-compose.yaml
+
+services:
+  c7experiment:
+    command: /bin/sh
+
+flow:
+  - name: run Experiment
+    container: c7experiment
+    commands:
+      - type: console
+        command: java -jar demo.jar
+        log-stdout: true
+        log-stderr: true
