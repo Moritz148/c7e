@@ -51,8 +51,8 @@ public class runC7experiment {
                 true,
                 "benchmark",
                 null,
-//                new File(App.class.getClassLoader().);
-//                bpmnfile
+//               new File(App.class.getClassLoader().getResource("c7ex.bpmn").getFile()));
+//              bpmnfile
                 tempFile
         );
         System.out.println("DEPLOYED");
@@ -121,7 +121,6 @@ public class runC7experiment {
 
         // Programm beenden
         System.exit(0);
-
     }
 
     private static void subscribe(ExternalTaskClient client, String topicName){
