@@ -2,7 +2,6 @@ package org.c7exp;
 
 import camundajar.impl.scala.App;
 import org.camunda.bpm.client.ExternalTaskClient;
-import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.community.rest.client.api.DeploymentApi;
 import org.camunda.community.rest.client.api.ProcessDefinitionApi;
 import org.camunda.community.rest.client.api.ProcessInstanceApi;
@@ -11,15 +10,18 @@ import org.camunda.community.rest.client.invoker.ApiClient;
 import org.camunda.community.rest.client.invoker.ApiException;
 
 import java.io.*;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 public class runC7experiment {
     static CountDownLatch latch = new CountDownLatch(1000);
+    static ApiClient apiClient = new ApiClient();
+    static int instancesCounter = 0;
+
+
     public static void main(String[] args) throws ApiException, IOException, InterruptedException {
 
-        ApiClient client = new ApiClient();
-        client.setBasePath("http://camunda7platform:8080/engine-rest");
+
+        apiClient.setBasePath("http://camunda7platform:8080/engine-rest");
 //        InputStream bpmnStream = App.class.getClassLoader().getResourceAsStream("c7ex.bpmn");
 //        File bpmnfile = new File((App.class.getClassLoader().getResource("c7ex.bpmn")).getFile());
 
@@ -44,7 +46,7 @@ public class runC7experiment {
         }
 
 
-        new DeploymentApi(client).createDeployment(
+        new DeploymentApi(apiClient).createDeployment(
                 null,
                 null,
                 true,
@@ -72,22 +74,27 @@ public class runC7experiment {
         subscribe(externalTaskClient, "my-task-8");
         subscribe(externalTaskClient, "my-task-9");
         subscribe(externalTaskClient, "my-task-10");
+        ProcessInstanceApi instanceApi = new ProcessInstanceApi(apiClient);
 
-        ProcessDefinitionApi api = new ProcessDefinitionApi(client);
-        ProcessInstanceApi instanceApi = new ProcessInstanceApi(client);
+        ProcessDefinitionApi api = new ProcessDefinitionApi(apiClient);
+
+        api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
+        instancesCounter++;
+        System.out.println("Instance #" + instancesCounter + " gestartet");
+
 
 
         // CountDownLatch, um nach allen 100 Instanzen zu warten
         //final int processCount = 100;
-
-        for (int i = 1; i <= 100; i++) {
+        /*for (int i = 1; i <= 100; i++) {
             ProcessInstanceWithVariablesDto PI = api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
             //ProcessInstanceWithVariablesDto PI2 = api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
             //api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
             String processInstanceId = PI.getId();
 
             System.out.println("STARTED instance " + i + " ID: " + processInstanceId);
-            /*System.out.println("STARTED instance " + "ID: " + PI2.getId());
+            */
+        /*System.out.println("STARTED instance " + "ID: " + PI2.getId());
 
             boolean isCompleted = false;
             System.out.println(isCompleted + "1");
@@ -108,11 +115,11 @@ public class runC7experiment {
                     Thread.sleep(1000); // 2 Sekunden warten
                 }
             }
-            System.out.println(isCompleted);*/
+            System.out.println(isCompleted);*//*
 
             System.out.println("Instance " + i + "done");
 
-        }
+        }*/
         latch.await();
         System.out.println("Alle Prozesse und Tasks abgeschlossen, das Programm wird beendet.");
 
@@ -124,14 +131,36 @@ public class runC7experiment {
     }
 
     private static void subscribe(ExternalTaskClient client, String topicName){
-        client.subscribe(topicName)
-                .lockDuration(1000)
-                .handler((externalTask, externalTaskService) -> {
-                    System.out.println("External Task " + topicName + " wird verarbeitet...");
-                    externalTaskService.complete(externalTask);
+        if (topicName == "my-task-10") {
+            client.subscribe(topicName)
+                    .lockDuration(1000)
+                    .handler((externalTask, externalTaskService) -> {
+                        System.out.println("External Task " + topicName + " wird verarbeitet...");
+                        externalTaskService.complete(externalTask);
 
-                    latch.countDown();
-                })
-                .open();
+                        latch.countDown();
+                        if (instancesCounter < 100){
+                        ProcessDefinitionApi api = new ProcessDefinitionApi(apiClient);
+                        try {
+                            api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
+                            instancesCounter++;
+                            System.out.println("Instance #" + instancesCounter + " gestartet");
+                        } catch (ApiException e) {
+                            throw new RuntimeException(e);
+                        }}
+                    })
+                    .open();
+        } else {
+            client.subscribe(topicName)
+                    .lockDuration(1000)
+                    .handler((externalTask, externalTaskService) -> {
+                        System.out.println("External Task " + topicName + " wird verarbeitet...");
+                        externalTaskService.complete(externalTask);
+
+                        latch.countDown();
+                    })
+                    .open();
+
+        }
     }
 }

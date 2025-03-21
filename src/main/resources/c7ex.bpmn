@@ -19,7 +19,7 @@
       <bpmn:incoming>Flow_08id39x</bpmn:incoming>
       <bpmn:outgoing>Flow_0xmcnwy</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1oclilm">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="task4" name="task4" camunda:type="external" camunda:topic="my-task-4">
@@ -30,7 +30,7 @@
       <bpmn:incoming>Flow_1bc5kw8</bpmn:incoming>
       <bpmn:outgoing>Flow_0iq0k4y</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_03iz2cn">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="task5" name="task5" camunda:type="external" camunda:topic="my-task-5">
