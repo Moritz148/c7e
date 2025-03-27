@@ -1,25 +1,27 @@
 services:
-  c7platform:
+  camunda:
     image: camunda/camunda-bpm-platform:latest
-    container_name: camunda7platform
+    container_name: camunda7
     restart: unless-stopped
     ports:
       - "8080:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-fs", "http://c7platform:8080/engine-rest/engine"]
-      interval: 20s
-      timeout: 5s
-      retries: 5
+#    healthcheck:
+#      test: ["CMD", "curl", "-fs", "http://camunda7:8080/engine-rest/engine"]
+#      interval: 20s
+#      timeout: 5s
+#      retries: 5
     networks:
       - camunda-platform
+
+
+
 
   c7experiment:
     image: moritz148/cam7exp:latest
     container_name: c7experiment
     restart: unless-stopped
     depends_on:
-      c7platform:
-        condition: service_healthy
+      - camunda
     networks:
       - camunda-platform
 
