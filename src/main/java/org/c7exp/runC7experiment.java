@@ -13,7 +13,7 @@ import java.io.*;
 import java.util.concurrent.CountDownLatch;
 
 public class runC7experiment {
-    static CountDownLatch latch = new CountDownLatch(1000);
+    static CountDownLatch latch = new CountDownLatch(1000); //100*10 Instanzen
     static ApiClient apiClient = new ApiClient();
     static int instancesCounter = 0;
 
@@ -156,7 +156,6 @@ public class runC7experiment {
                     .handler((externalTask, externalTaskService) -> {
                         System.out.println("External Task " + topicName + " wird verarbeitet...");
                         externalTaskService.complete(externalTask);
-
                         latch.countDown();
                     })
                     .open();
