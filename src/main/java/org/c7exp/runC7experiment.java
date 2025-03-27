@@ -21,7 +21,7 @@ public class runC7experiment {
     public static void main(String[] args) throws ApiException, IOException, InterruptedException {
 
 
-        apiClient.setBasePath("http://camunda7platform:8080/engine-rest");
+        apiClient.setBasePath("http://camunda7:8080/engine-rest");
 //        InputStream bpmnStream = App.class.getClassLoader().getResourceAsStream("c7ex.bpmn");
 //        File bpmnfile = new File((App.class.getClassLoader().getResource("c7ex.bpmn")).getFile());
 
@@ -60,7 +60,7 @@ public class runC7experiment {
         System.out.println("DEPLOYED");
 
         ExternalTaskClient externalTaskClient = ExternalTaskClient.create()
-                .baseUrl("http://camunda7platform:8080/engine-rest")
+                .baseUrl("http://camunda7:8080/engine-rest")
                 .asyncResponseTimeout(10000)
                 .build();
 
