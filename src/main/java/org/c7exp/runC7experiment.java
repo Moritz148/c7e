@@ -13,7 +13,7 @@ import java.io.*;
 import java.util.concurrent.CountDownLatch;
 
 public class runC7experiment {
-    static CountDownLatch latch = new CountDownLatch(1000); //100*10 Instanzen
+    static CountDownLatch latch = new CountDownLatch(100); //100*10 Instanzen
     static ApiClient apiClient = new ApiClient();
     static int instancesCounter = 0;
 
