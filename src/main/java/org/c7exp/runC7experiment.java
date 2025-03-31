@@ -139,12 +139,12 @@ public class runC7experiment {
                         externalTaskService.complete(externalTask);
 
                         latch.countDown();
-                        if (instancesCounter < 100){
+                        if (instancesCounter < 10){
                         ProcessDefinitionApi api = new ProcessDefinitionApi(apiClient);
                         try {
                             api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
                             instancesCounter++;
-                            System.out.println("Instance #" + instancesCounter + " gestartet");
+                            //System.out.println("Instance #" + instancesCounter + " gestartet");
                         } catch (ApiException e) {
                             throw new RuntimeException(e);
                         }}

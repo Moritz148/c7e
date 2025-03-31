@@ -15,7 +15,8 @@ services:
       - camunda-platform
 
   c7experiment:
-    image: moritz148/cam7exp:latest
+    #image: moritz148/cam7exp:latest
+    image: moritz148/cam7exp:test
     container_name: c7experiment
     restart: unless-stopped
     depends_on:
