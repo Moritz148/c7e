@@ -8,14 +8,21 @@ import org.camunda.community.rest.client.api.ProcessInstanceApi;
 import org.camunda.community.rest.client.dto.*;
 import org.camunda.community.rest.client.invoker.ApiClient;
 import org.camunda.community.rest.client.invoker.ApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.concurrent.CountDownLatch;
 
 public class runC7experiment {
-    static CountDownLatch latch = new CountDownLatch(100); //100*10 Instanzen
+    static {
+        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
+        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "yyyy-MM-dd HH:mm:ss.SSS");
+    }
+    static CountDownLatch latch = new CountDownLatch(1); //100*10 Instanzen
     static ApiClient apiClient = new ApiClient();
     static int instancesCounter = 0;
+    private static final Logger logger = LoggerFactory.getLogger(runC7experiment.class);
 
 
     public static void main(String[] args) throws ApiException, IOException, InterruptedException {
@@ -27,14 +34,16 @@ public class runC7experiment {
 
 
         // BPMN-Datei aus dem Classpath als InputStream laden
-        InputStream bpmnStream = App.class.getClassLoader().getResourceAsStream("c7ex.bpmn");
+        InputStream bpmnStream = App.class.getClassLoader().getResourceAsStream("C7-test.bpmn");
 
         if (bpmnStream == null) {
             throw new RuntimeException("BPMN file not found: c7ex.bpmn");
         }
 
         // Temporäre Datei erstellen, um den InputStream zu speichern
-        File tempFile = File.createTempFile("c7ex", ".bpmn");
+        //File tempFile = File.createTempFile("c7ex", ".bpmn");
+        File tempFile = File.createTempFile("C7-test", ".bpmn");
+
         tempFile.deleteOnExit(); // Datei wird beim Beenden des Programms gelöscht
 
         try (OutputStream outputStream = new FileOutputStream(tempFile)) {
@@ -57,31 +66,80 @@ public class runC7experiment {
 //              bpmnfile
                 tempFile
         );
-        System.out.println("DEPLOYED");
+        logger.info("Process deployed");
+        //System.out.println("DEPLOYED");
 
-        ExternalTaskClient externalTaskClient = ExternalTaskClient.create()
+        /*ExternalTaskClient externalTaskClient1 = ExternalTaskClient.create()
                 .baseUrl("http://camunda7:8080/engine-rest")
                 .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient2 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient3 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient4 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient5 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient6 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient7 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient8 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient9 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
+                .build();
+        ExternalTaskClient externalTaskClient10 = ExternalTaskClient.create()
+                .baseUrl("http://camunda7:8080/engine-rest")
+                .asyncResponseTimeout(10000)
+                .maxTasks(100)
                 .build();
 
-        subscribe(externalTaskClient, "my-task-1");
-        subscribe(externalTaskClient, "my-task-2");
-        subscribe(externalTaskClient, "task3");
-        subscribe(externalTaskClient, "my-task-4");
-        subscribe(externalTaskClient, "my-task-5");
-        subscribe(externalTaskClient, "my-task-6");
-        subscribe(externalTaskClient, "my-task-7");
-        subscribe(externalTaskClient, "my-task-8");
-        subscribe(externalTaskClient, "my-task-9");
-        subscribe(externalTaskClient, "my-task-10");
+        subscribe(externalTaskClient1, "my-task-1");
+        subscribe(externalTaskClient2, "my-task-2");
+        subscribe(externalTaskClient3, "task3");
+        subscribe(externalTaskClient4, "my-task-4");
+        subscribe(externalTaskClient5, "my-task-5");
+        subscribe(externalTaskClient6, "my-task-6");
+        subscribe(externalTaskClient7, "my-task-7");
+        subscribe(externalTaskClient8, "my-task-8");
+        subscribe(externalTaskClient9, "my-task-9");
+        subscribe(externalTaskClient10, "my-task-10");*/
         ProcessInstanceApi instanceApi = new ProcessInstanceApi(apiClient);
 
         ProcessDefinitionApi api = new ProcessDefinitionApi(apiClient);
 
-        api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
-        instancesCounter++;
-        System.out.println("Instance #" + instancesCounter + " gestartet");
+        //api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
 
+        api.startProcessInstanceByKey("Process_1yjzvci", new StartProcessInstanceDto());
+        instancesCounter++;
+        logger.info("Instance #{} gestartet", instancesCounter);
+        //System.out.println("Instance #" + instancesCounter + " gestartet");
 
 
         // CountDownLatch, um nach allen 100 Instanzen zu warten
@@ -115,16 +173,23 @@ public class runC7experiment {
                     Thread.sleep(1000); // 2 Sekunden warten
                 }
             }
-            System.out.println(isCompleted);*//*
-
-            System.out.println("Instance " + i + "done");
-
-        }*/
+            System.out.println(isCompleted);*//**/
+        latch.countDown();
         latch.await();
-        System.out.println("Alle Prozesse und Tasks abgeschlossen, das Programm wird beendet.");
 
+        //System.out.println("Alle Prozesse und Tasks abgeschlossen, das Programm wird beendet.");
+        logger.info("Alle Prozesse und Tasks abgeschlossen, das Programm wird beendet.");
         // Beende den ExternalTaskClient
-        externalTaskClient.stop();
+        /*externalTaskClient1.stop();
+        externalTaskClient2.stop();
+        externalTaskClient3.stop();
+        externalTaskClient4.stop();
+        externalTaskClient5.stop();
+        externalTaskClient6.stop();
+        externalTaskClient7.stop();
+        externalTaskClient8.stop();
+        externalTaskClient9.stop();
+        externalTaskClient10.stop();*/
 
         // Programm beenden
         System.exit(0);
@@ -135,7 +200,8 @@ public class runC7experiment {
             client.subscribe(topicName)
                     .lockDuration(1000)
                     .handler((externalTask, externalTaskService) -> {
-                        System.out.println("External Task " + topicName + " wird verarbeitet...");
+                        //System.out.println("External Task " + topicName + " wird verarbeitet...");
+                        logger.info("External Task {} wird verarbeitet...", topicName);
                         externalTaskService.complete(externalTask);
 
                         latch.countDown();
@@ -144,6 +210,7 @@ public class runC7experiment {
                         try {
                             api.startProcessInstanceByKey("typicalC7process", new StartProcessInstanceDto());
                             instancesCounter++;
+                            logger.info("Instance #{} gestartet", instancesCounter);
                             //System.out.println("Instance #" + instancesCounter + " gestartet");
                         } catch (ApiException e) {
                             throw new RuntimeException(e);
@@ -154,7 +221,8 @@ public class runC7experiment {
             client.subscribe(topicName)
                     .lockDuration(1000)
                     .handler((externalTask, externalTaskService) -> {
-                        System.out.println("External Task " + topicName + " wird verarbeitet...");
+                        //System.out.println("External Task " + topicName + " wird verarbeitet...");
+                        logger.info("External Task {} wird verarbeitet...", topicName);
                         externalTaskService.complete(externalTask);
                         latch.countDown();
                     })
