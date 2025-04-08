@@ -18,7 +18,7 @@ services:
     #image: moritz148/cam7exp:latest
     image: moritz148/cam7exp:test
     container_name: c7experiment
-    restart: unless-stopped
+    restart: no
     depends_on:
       camunda:
         condition: service_healthy
