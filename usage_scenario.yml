@@ -14,5 +14,5 @@ flow:
     commands:
       - type: console
         command: java -jar demo.jar
-        log-stdout: true
-        log-stderr: true
+        log-stdout: false
+        log-stderr: false

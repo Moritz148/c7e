@@ -16,7 +16,9 @@ services:
 
   c7experiment:
     #image: moritz148/cam7exp:latest
-    image: moritz148/cam7exp:test
+#    image: moritz148/cam7exp:test
+#    image: moritz148/c7experimenttest:v1
+    image: moritz148/c7experimenttest:v2
     container_name: c7experiment
     restart: no
     depends_on:
